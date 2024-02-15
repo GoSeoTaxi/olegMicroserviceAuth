@@ -1,6 +1,6 @@
 package main
 
-import "olegMicroserviceAuth/cmd"
+import "github.com/GoSeoTaxi/olegMicroserviceAuth/cmd"
 
 func main() {
 

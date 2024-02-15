@@ -1,9 +1,13 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/fatih/color"
+)
 
 func RunService() {
 
-	fmt.Println("START")
+	fmt.Println(color.HiRedString("START!"))
 
 }
