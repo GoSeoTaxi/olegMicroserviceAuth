@@ -1,9 +1,15 @@
 package main
 
-import "github.com/GoSeoTaxi/olegMicroserviceAuth/cmd"
+import (
+	"fmt"
+
+	"github.com/GoSeoTaxi/olegMicroserviceAuth/cmd"
+	"github.com/fatih/color"
+)
 
 func main() {
 
+	fmt.Println(color.HiRedString("Starting..."))
 	cmd.RunService()
 
 }
