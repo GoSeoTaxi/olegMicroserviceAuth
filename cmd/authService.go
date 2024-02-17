@@ -18,12 +18,11 @@ type server struct {
 	desc.UnimplementedUserV1Server
 }
 
-// RunService запускает сервис Auth
+// RunService start service Auth
 func RunService() {
+	cfg := config.NewConfig()
 
-	config := config.NewConfig()
-
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", config.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -37,20 +36,19 @@ func RunService() {
 	if err = s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
-
 }
 
 func (s *server) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
 	log.Printf("User id: %d", req.GetId())
 
-	var role desc.RoleEnum
-	switch gofakeit.Number(0, 1) {
-	case 0:
-		role = desc.RoleEnum_user
+	var role desc.Role
+	switch gofakeit.Number(0, 2) {
 	case 1:
-		role = desc.RoleEnum_admin
+		role = desc.Role_USER
+	case 2:
+		role = desc.Role_ADMIN
 	default:
-		role = desc.RoleEnum_user
+		role = desc.Role_UNKNOWN
 	}
 
 	return &desc.GetResponse{

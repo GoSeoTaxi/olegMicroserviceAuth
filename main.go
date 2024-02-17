@@ -8,8 +8,6 @@ import (
 )
 
 func main() {
-
 	fmt.Println(color.HiRedString("Starting..."))
 	cmd.RunService()
-
 }
