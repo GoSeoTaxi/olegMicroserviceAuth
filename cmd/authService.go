@@ -19,7 +19,7 @@ import (
 func RunService(ctx context.Context) {
 	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Fatalf("parcing config err = ", err)
+		log.Fatalf("parcing config err = %v", err)
 	}
 
 	log.Println(color.HiYellowString("Init DB..."))

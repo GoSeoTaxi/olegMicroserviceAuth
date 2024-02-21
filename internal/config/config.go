@@ -25,11 +25,11 @@ type Config struct {
 func NewConfig() (*Config, error) {
 	var cfg Config
 
-	err := godotenv.Load(".env." + "local")
+	err := godotenv.Load(".env.local")
 	if err != nil {
 		err := godotenv.Load(".env")
 		if err != nil {
-			log.Fatalf("Ошибка при загрузке файла .env: - ", err)
+			log.Fatalf("Ошибка при загрузке файла .env: - %v ", err)
 		}
 	}
 
