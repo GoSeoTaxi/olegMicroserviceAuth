@@ -8,57 +8,47 @@ import (
 
 	desc "github.com/GoSeoTaxi/olegMicroserviceAuth/grpc/pkg/user_v1"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/config"
-	"github.com/brianvoe/gofakeit"
+	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/service/grpcService"
+	"github.com/fatih/color"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type server struct {
-	desc.UnimplementedUserV1Server
-}
-
 // RunService start service Auth
-func RunService() {
-	cfg := config.NewConfig()
+func RunService(ctx context.Context) {
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatalf("parcing config err = ", err)
+	}
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Port))
+	log.Println(color.HiYellowString("Init DB..."))
+	dbDSN := fmt.Sprintf("host=%v port=%v dbname=%v user=%v password=%v sslmode=%v", cfg.HostDB, cfg.PortDB, cfg.NameDB, cfg.LoginDB, cfg.PasswordDB, cfg.SSLTypeDB)
+	pool, err := pgxpool.Connect(ctx, dbDSN)
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+	defer pool.Close()
+
+	log.Println(color.HiRedString("Starting..."))
+
+	lis, err := net.Listen("tcp", fmt.Sprintf("%v:%d", cfg.HostDB, cfg.PortGRPC))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
 	reflection.Register(s)
-	desc.RegisterUserV1Server(s, &server{})
+	desc.RegisterUserV1Server(s, &grpcService.ServerService{DBPool: pool})
 
-	log.Printf("server listening at %v", lis.Addr())
+	log.Printf(color.HiYellowString("server listening at %v \n", lis.Addr()))
+
+	go func() {
+		<-ctx.Done()
+		gracefulStopServer(s)
+	}()
 
 	if err = s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
-}
-
-func (s *server) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
-	log.Printf("User id: %d", req.GetId())
-
-	var role desc.Role
-	switch gofakeit.Number(0, 2) {
-	case 1:
-		role = desc.Role_USER
-	case 2:
-		role = desc.Role_ADMIN
-	default:
-		role = desc.Role_UNKNOWN
-	}
-
-	return &desc.GetResponse{
-		UserInfo: &desc.UserInfo{
-			Id:        req.GetId(),
-			Name:      gofakeit.Name(),
-			Email:     gofakeit.Email(),
-			Role:      role,
-			CreatedAt: timestamppb.New(gofakeit.Date()),
-			UpdateAt:  timestamppb.New(gofakeit.Date()),
-		},
-	}, nil
 }
