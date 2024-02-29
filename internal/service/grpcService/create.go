@@ -10,7 +10,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
-func (s *ServerService) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
+func (s *serverService) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 	userInfo := req.GetUserCreate()
 	if userInfo == nil {
 		return nil, fmt.Errorf("no user information provided")

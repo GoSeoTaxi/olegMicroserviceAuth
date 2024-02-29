@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (s *ServerService) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
+func (s *serverService) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
 	queryBuilder := sq.Select(
 		"id",
 		"user_name",

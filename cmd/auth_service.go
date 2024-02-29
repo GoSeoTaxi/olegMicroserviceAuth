@@ -6,13 +6,11 @@ import (
 	"log"
 	"net"
 
-	desc "github.com/GoSeoTaxi/olegMicroserviceAuth/grpc/pkg/user_v1"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/config"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/service/grpcService"
 	"github.com/fatih/color"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 // RunService start service Auth
@@ -38,8 +36,7 @@ func RunService(ctx context.Context) {
 	}
 
 	s := grpc.NewServer()
-	reflection.Register(s)
-	desc.RegisterUserV1Server(s, &grpcService.ServerService{DBPool: pool})
+	grpcService.RegisterWithServer(s, pool)
 
 	log.Printf(color.HiYellowString("server listening at %v \n", lis.Addr()))
 

@@ -4,22 +4,33 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	AppName      string `env:"APP_NAME" envDefault:"Auth_Service"`
-	HostGRPC     string
-	PortGRPC     int
-	UsernameGRPC string
-	PasswordGRPC string
-	HostDB       string
-	PortDB       int
-	LoginDB      string
-	PasswordDB   string
-	NameDB       string
-	SSLTypeDB    string
+	AppName string `env:"APP_NAME" envDefault:"Auth_Service"`
+
+	HostGRPC              string
+	PortGRPC              int
+	UseTLSGRPC            bool
+	TLSCertFileGRPC       string
+	TLSKeyFileGRPC        string
+	TLSServerNameGRPC     string
+	TimeoutGRPC           time.Time
+	ConnectTimeouGRPC     time.Time
+	MetadataGRPC          map[string]string
+	SerializationTypeGRPC string
+	CompressionGRPC       bool
+	AuthTokenGRPC         string
+
+	HostDB     string
+	PortDB     int
+	LoginDB    string
+	PasswordDB string
+	NameDB     string
+	SSLTypeDB  string
 }
 
 func NewConfig() (*Config, error) {
@@ -40,8 +51,9 @@ func NewConfig() (*Config, error) {
 	if err != nil {
 		log.Fatalf("Ошибка при преобразовании порта GRPC в число: %v", err)
 	}
-	cfg.UsernameGRPC = os.Getenv("GRPC_LOGIN")
-	cfg.PasswordGRPC = os.Getenv("GRPC_PASSWORD")
+
+	cfg.MetadataGRPC = make(map[string]string)
+	cfg.SerializationTypeGRPC = "protobuf"
 
 	cfg.HostDB = os.Getenv("POSTGRES_HOST")
 	if len(cfg.HostDB) < 1 {

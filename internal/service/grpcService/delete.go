@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *ServerService) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
+func (s *serverService) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
 	if req.Id < 1 {
 		return nil, fmt.Errorf("ID must be greater than 0")
 	}

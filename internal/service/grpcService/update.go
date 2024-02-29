@@ -10,8 +10,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *ServerService) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
-
+func (s *serverService) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
 	if req.Id < 1 {
 		return nil, fmt.Errorf("ID must be greater than 0")
 	}
