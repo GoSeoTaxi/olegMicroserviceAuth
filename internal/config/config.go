@@ -1,59 +1,34 @@
 package config
 
-import (
-	"log"
-	"os"
-	"strconv"
-	"time"
-
-	"github.com/joho/godotenv"
-)
-
-type Config struct {
-	AppName string `env:"APP_NAME" envDefault:"Auth_Service"`
-
-	HostGRPC              string
-	PortGRPC              int
-	UseTLSGRPC            bool
-	TLSCertFileGRPC       string
-	TLSKeyFileGRPC        string
-	TLSServerNameGRPC     string
-	TimeoutGRPC           time.Time
-	ConnectTimeouGRPC     time.Time
-	MetadataGRPC          map[string]string
-	SerializationTypeGRPC string
-	CompressionGRPC       bool
-	AuthTokenGRPC         string
-
-	HostDB     string
-	PortDB     int
-	LoginDB    string
-	PasswordDB string
-	NameDB     string
-	SSLTypeDB  string
-}
-
-func NewConfig() (*Config, error) {
-	var cfg Config
-
-	err := godotenv.Load(".env.local")
+/*func Load(path string) error {
+	err := godotenv.Load(path + ".env.local")
 	if err != nil {
-		err := godotenv.Load(".env")
+		err := godotenv.Load(path + ".env")
 		if err != nil {
 			log.Fatalf("Ошибка при загрузке файла .env: - %v ", err)
 		}
 	}
+	return nil
+}*/
+
+/*
+type Config struct {
+	AppName string `env:"APP_NAME" envDefault:"Auth_Service"`
+	GRPC    GRPCConfig
+	DB      DBConfig
+}
+
+func NewConfig() (*Config, error) {
+	var cfg Config
+	var err error
 
 	cfg.AppName = os.Getenv("APP_NAME")
 
-	cfg.HostGRPC = os.Getenv("GRPC_HOST")
+	cfg.GRPC.Host = os.Getenv("GRPC_HOST")
 	cfg.PortGRPC, err = strconv.Atoi(os.Getenv("GRPC_PORT"))
 	if err != nil {
 		log.Fatalf("Ошибка при преобразовании порта GRPC в число: %v", err)
 	}
-
-	cfg.MetadataGRPC = make(map[string]string)
-	cfg.SerializationTypeGRPC = "protobuf"
 
 	cfg.HostDB = os.Getenv("POSTGRES_HOST")
 	if len(cfg.HostDB) < 1 {
@@ -76,3 +51,4 @@ func NewConfig() (*Config, error) {
 
 	return &cfg, nil
 }
+*/
