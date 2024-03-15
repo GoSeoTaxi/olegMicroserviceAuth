@@ -3,9 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/cmd"
 	"github.com/fatih/color"
@@ -16,13 +13,8 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	shutdown := make(chan os.Signal, 1)
-	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
+	cmd.RunService(ctx)
 
-	go cmd.RunService(ctx)
-
-	<-shutdown
 	fmt.Println(color.HiRedString("Shutting down..."))
 
-	cancel()
 }
