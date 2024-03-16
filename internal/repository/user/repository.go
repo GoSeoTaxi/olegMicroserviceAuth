@@ -1,8 +1,8 @@
 package user
 
 import (
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/client/db"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/repository"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db"
 )
 
 const (

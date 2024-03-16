@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/client/db"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db"
 	sq "github.com/Masterminds/squirrel"
 )
 

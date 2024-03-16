@@ -5,15 +5,15 @@ import (
 	"log"
 
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/api/auth"
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/client/db"
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/client/db/pg"
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/client/transaction"
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/closer"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/config"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/repository"
 	authRepository "github.com/GoSeoTaxi/olegMicroserviceAuth/internal/repository/user"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/service"
 	authService "github.com/GoSeoTaxi/olegMicroserviceAuth/internal/service/auth"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/closer"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db/pg"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db/transaction"
 )
 
 type serviceProvider struct {

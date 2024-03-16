@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/client/db"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/model"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db"
 	sq "github.com/Masterminds/squirrel"
 )
 

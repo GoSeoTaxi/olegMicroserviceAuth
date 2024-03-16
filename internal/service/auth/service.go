@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/client/db"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/repository"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/service"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db"
 )
 
 type serv struct {
