@@ -1,0 +1,201 @@
+package tests
+
+import (
+	"context"
+	"crypto/md5"
+	"encoding/hex"
+	"testing"
+	"time"
+
+	"github.com/brianvoe/gofakeit/v6"
+	"github.com/jackc/pgx/v4"
+	"github.com/stretchr/testify/require"
+
+	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/model"
+	mockpostgres "github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db/mocks"
+	postgres "github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/db/pg"
+)
+
+func TestService_SuccessUserCreate(t *testing.T) {
+	type args struct {
+		ctx             context.Context
+		userCreateInput model.User
+		logCreateInput  model.Log
+	}
+
+	type mocker struct {
+		txManager mockpostgres.TxManagerMock
+		user      model.User
+		log       model.Log
+	}
+
+	var (
+		id       = int64(gofakeit.Uint8())
+		name     = gofakeit.Name()
+		email    = gofakeit.Email()
+		password = gofakeit.Password(true, true, true, false, false, 8)
+
+		hash           = md5.Sum([]byte(password))
+		hashedPassword = hex.EncodeToString(hash[:])
+
+		user = model.User{
+			ID: id,
+			UserT: struct {
+				Name         string
+				Email        string
+				HashPassword string
+				Role         int64
+			}{Name: name, Email: email, HashPassword: hashedPassword, Role: 1},
+			CreatedAt: time.Time{},
+			UpdatedAt: time.Time{},
+		}
+
+		logCreateInput = model.Log{
+			Type: "Create",
+			Data: "123 - log string",
+		}
+	)
+
+	tests := []struct {
+		name   string
+		args   args
+		want   uint64
+		err    error
+		mocker func(tt args) mocker
+	}{
+		{
+			name: "success",
+			args: args{
+				ctx:             context.Background(),
+				userCreateInput: user,
+				logCreateInput:  logCreateInput,
+			},
+			want: userID,
+			err:  nil,
+			mocker: func(tt args) mocker {
+				txOpts := pgx.TxOptions{
+					IsoLevel: pgx.ReadCommitted,
+				}
+
+				tx := mockpostgres.NewTxManagerMock(t)
+
+				txCtx := postgres.InjectTX(tt.ctx, tx)
+
+				tx.On("Commit", txCtx).Return(nil)
+
+				db := mockpostgres.NewQueryExecerMock(t)
+				db.On("BeginTx", tt.ctx, txOpts).Return(tx, nil)
+
+				txManager := postgres.NewTxManager(db)
+				userRepo := mockpostgres.NewMockUserRepository(t)
+				logRepo := mockrepository.NewMockLogRepository(t)
+
+				userRepo.On("Create", txCtx, tt.userCreateInput).Return(userID, nil)
+
+				logRepo.On("Log", txCtx, tt.logCreateInput).Return(nil)
+
+				return mocker{
+					txManager: txManager,
+					user:      userRepo,
+					log:       logRepo,
+				}
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Parallel()
+
+		t.Run(tt.name, func(t *testing.T) {
+			mocker := tt.mocker(tt.args)
+
+			service := userservice.NewService(mocker.txManager, mocker.user, mocker.log)
+
+			output, err := service.Create(tt.args.ctx, tt.args.userCreateInput)
+
+			require.Equal(t, tt.err, err)
+			require.Equal(t, tt.want, output)
+		})
+	}
+}
+
+/*
+func TestCreate(t *testing.T) {
+	t.Parallel()
+	type authRepositoryMockFunc func(mc *minimock.Controller) repository.AuthRepository
+
+	type args struct {
+		ctx context.Context
+		req *model.User
+	}
+
+	type mocker struct {
+		txManager pgMock.Sqlmock
+		user      repository.UserRepository
+		log       repository.LogRepository
+	}
+
+	var (
+		ctx = context.Background()
+		mc  = minimock.NewController(t)
+
+		id       = int64(gofakeit.Uint8())
+		name     = gofakeit.Name()
+		email    = gofakeit.Email()
+		password = gofakeit.Password(true, true, true, false, false, 8)
+
+		hash           = md5.Sum([]byte(password))
+		hashedPassword = hex.EncodeToString(hash[:])
+
+		req = &model.User{
+			ID: id,
+			UserT: struct {
+				Name         string
+				Email        string
+				HashPassword string
+				Role         int64
+			}{Name: name, Email: email, HashPassword: hashedPassword, Role: 1},
+			CreatedAt: time.Time{},
+			UpdatedAt: time.Time{},
+		}
+	)
+	defer t.Cleanup(mc.Finish)
+
+	tests := []struct {
+		name               string
+		args               args
+		want               int64
+		err                error
+		authRepositoryMock authRepositoryMockFunc
+	}{
+		{
+			name: "success case",
+			args: args{
+				ctx: ctx,
+				req: req,
+			},
+			want: id,
+			err:  nil,
+			authRepositoryMock: func(mc *minimock.Controller) repository.AuthRepository {
+				mock := repoMocks.NewAuthRepositoryMock(mc)
+
+				mock.CreateMock.Expect(ctx, req).Return(id, nil)
+				mock.WriterLogMock.Expect(ctx, "+").Return(nil)
+				return mock
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			authRepoMock := tt.authRepositoryMock(mc)
+
+			service := auth.NewMockService(authRepoMock, mc)
+			newID, err := service.Create(tt.args.ctx, tt.args.req)
+			require.Equal(t, tt.err, err)
+			require.Equal(t, tt.want, newID)
+		})
+	}
+}
+*/
