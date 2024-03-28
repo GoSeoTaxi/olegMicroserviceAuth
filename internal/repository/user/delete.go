@@ -9,6 +9,9 @@ import (
 )
 
 func (r *repo) Delete(ctx context.Context, id int64) error {
+	if id < 1 {
+		return fmt.Errorf("ID must be greater than 0")
+	}
 	queryBuilder := sq.Delete(tableName).PlaceholderFormat(sq.Dollar).Where(sq.Eq{idColumn: id})
 
 	sqlQuery, args, err := queryBuilder.ToSql()

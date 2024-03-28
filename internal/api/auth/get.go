@@ -11,7 +11,7 @@ func (i *Implementation) Get(ctx context.Context, req *desc.GetRequest) (*desc.G
 	userID := ex.ConvertProtoToModelGetRequest(req)
 	res, err := i.authService.Get(ctx, userID)
 	if err != nil {
-		return nil, err
+		return &desc.GetResponse{}, err
 	}
 	result := ex.ConvertModelToProtoGetRequest(res)
 	return result, nil

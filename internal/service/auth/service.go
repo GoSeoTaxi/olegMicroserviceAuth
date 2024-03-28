@@ -17,3 +17,10 @@ func NewService(authRepository repository.AuthRepository, txManager db.TxManager
 		txManager:      txManager,
 	}
 }
+
+func NewMockService(userRepo repository.AuthRepository, txManager db.TxManager) service.AuthService {
+	return &serv{
+		authRepository: userRepo,
+		txManager:      txManager,
+	}
+}

@@ -11,7 +11,9 @@ import (
 )
 
 func (r *repo) Update(ctx context.Context, user *model.User) error {
-
+	if user.ID < 1 {
+		return fmt.Errorf("ID must be greater than 0")
+	}
 	queryBuilder := sq.Update("users").PlaceholderFormat(sq.Dollar)
 	if len(user.UserT.Name) > 0 {
 		queryBuilder = queryBuilder.Set("user_name", user.UserT.Name)
