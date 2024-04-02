@@ -10,9 +10,6 @@ import (
 )
 
 func (i *Implementation) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
-	if req.Id < 1 {
-		return nil, fmt.Errorf("ID must be greater than 0")
-	}
 	// Проверяем, установлено ли поле Name
 	var hasName bool
 	if req.Name != nil {

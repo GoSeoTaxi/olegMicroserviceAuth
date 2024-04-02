@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	desc "github.com/GoSeoTaxi/olegMicroserviceAuth/grpc/pkg/user_v1"
-	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/closer"
+	"github.com/GoSeoTaxi/olegMicroservicePlatform/pkg/closer"
 )
 
 type App struct {
