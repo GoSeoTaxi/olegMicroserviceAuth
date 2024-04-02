@@ -3,7 +3,6 @@ package converter
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 
 	desc "github.com/GoSeoTaxi/olegMicroserviceAuth/grpc/pkg/user_v1"
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/model"
@@ -70,8 +69,5 @@ func ConvertProtoToModelCreateRequest(user *desc.CreateRequest) *model.User {
 }
 
 func ConvertModelToProtoCreateRequest(id int64) (res *desc.CreateResponse, err error) {
-	if id < 1 {
-		err = fmt.Errorf("error create User")
-	}
 	return &desc.CreateResponse{Id: id}, err
 }

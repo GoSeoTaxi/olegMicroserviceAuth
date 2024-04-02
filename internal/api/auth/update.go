@@ -34,5 +34,6 @@ func (i *Implementation) Update(ctx context.Context, req *desc.UpdateRequest) (*
 	}
 
 	err := i.authService.Update(ctx, ex.ConvertProtoToModelUpdateRequest(req))
+
 	return &emptypb.Empty{}, err
 }
