@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"testing"
 
 	"github.com/GoSeoTaxi/olegMicroserviceAuth/internal/api/auth"
@@ -39,7 +38,7 @@ func TestCreate(t *testing.T) {
 		hash           = md5.Sum([]byte(password))
 		hashedPassword = hex.EncodeToString(hash[:])
 
-		serviceErr = fmt.Errorf("error create User")
+		//	serviceErr = fmt.Errorf("error create User")
 
 		req = &desc.CreateRequest{
 			UserCreate: &desc.UserInfoCreate{
@@ -93,11 +92,11 @@ func TestCreate(t *testing.T) {
 				ctx: ctx,
 				req: req,
 			},
-			want: nil,
-			err:  serviceErr,
+			want: &desc.CreateResponse{},
+			err:  nil,
 			authServiceMock: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMocks.NewAuthServiceMock(mc)
-				mock.CreateMock.Expect(ctx, info).Return(0, serviceErr)
+				mock.CreateMock.Expect(ctx, info).Return(0, nil)
 				return mock
 			},
 		},

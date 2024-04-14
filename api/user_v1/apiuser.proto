@@ -5,8 +5,28 @@ package user_v1;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
+import "validate/validate.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/GoSeoTaxi/olegMicroserviceAuth/grpc/pkg/user_v1;user_v1";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Auth API"
+    version: "0.0.5"
+    contact: {
+      name: "NoNameFromInternet"
+      email: "go@seo.taxi"
+    };
+  };
+
+  host: "localhost:8080",
+  schemes: HTTP,
+  schemes: HTTPS,
+  consumes: "application/json",
+  produces: "application/json",
+};
 
 // Common type
 enum Role {
@@ -18,18 +38,39 @@ enum Role {
 
 
 service UserV1 {
-  rpc Create(CreateRequest) returns (CreateResponse);
-  rpc Get(GetRequest) returns (GetResponse);
-  rpc Update(UpdateRequest) returns (google.protobuf.Empty);
-  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+  rpc Create(CreateRequest) returns (CreateResponse){
+    option (google.api.http) = {
+      post: "/auth/v1"
+      body: "*"
+    };
+  };
+
+  rpc Get(GetRequest) returns (GetResponse){
+    option (google.api.http) = {
+    get: "/auth/v1"
+        };
+  };
+
+  rpc Update(UpdateRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      patch: "/auth/v1"
+      body: "*"
+    };
+  };
+
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      delete: "/auth/v1"
+    };
+  };
 }
 
 // Create
 message UserInfoCreate {
-  string name = 1;
-  string email = 2;
-  string password = 3;
-  string password_confirm = 4;
+  string name = 1[(validate.rules).string = {min_len: 1, max_len: 255}];
+  string email = 2[(validate.rules).string = {pattern: "^\\S+@\\S+$"}];
+  string password = 3 [(validate.rules).string = {min_len: 8, max_len: 128}];
+  string password_confirm = 4 [(validate.rules).string = {min_len: 8, max_len: 128}];
   Role role = 5;
 }
 
@@ -61,13 +102,13 @@ message UserInfo {
 
 // Update
 message UpdateRequest {
-  int64 id = 1;
-  google.protobuf.StringValue name = 2;
+  int64 id = 1[(validate.rules).int64 = {gt: 1}];
+  google.protobuf.StringValue name = 2[(validate.rules).string = {min_len: 1, max_len: 255}];
   google.protobuf.StringValue email = 3;
   Role role = 4;
 }
 
 // Delete
 message DeleteRequest {
-  int64 id = 1;
+  int64 id = 1[(validate.rules).int64 = {gt: 1}];
 }

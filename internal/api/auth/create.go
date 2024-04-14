@@ -14,14 +14,6 @@ func (i *Implementation) Create(ctx context.Context, req *desc.CreateRequest) (*
 		return nil, fmt.Errorf("no user information provided")
 	}
 
-	if userInfo.Name == "" ||
-		userInfo.Email == "" ||
-		userInfo.Password == "" ||
-		userInfo.PasswordConfirm == "" ||
-		userInfo.Role < 1 {
-		return nil, fmt.Errorf("not all required fields provided")
-	}
-
 	if userInfo.Password != userInfo.PasswordConfirm {
 		return nil, fmt.Errorf("passwords are not equal")
 	}
@@ -33,9 +25,11 @@ func (i *Implementation) Create(ctx context.Context, req *desc.CreateRequest) (*
 	}
 
 	res, err := i.authService.Create(ctx, user)
+
 	result, err := ex.ConvertModelToProtoCreateRequest(res)
 	if err != nil {
 		return nil, err
 	}
+
 	return result, err
 }
